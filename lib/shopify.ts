@@ -3,9 +3,8 @@
 const domain = import.meta.env.VITE_SHOPIFY_DOMAIN;
 const storefrontAccessToken = import.meta.env.VITE_SHOPIFY_TOKEN;
 
-async function ShopifyData(query: string) {
+async function shopifyData(query: string) {
   const URL = `https://${domain}/api/2023-10/graphql.json`;
-
   const options = {
     endpoint: URL,
     method: "POST",
@@ -18,31 +17,32 @@ async function ShopifyData(query: string) {
   };
 
   try {
-    const data = await fetch(URL, options).then((response) => {
-      return response.json();
-    });
-    return data;
+    const res = await fetch(URL, options);
+    return await res.json();
   } catch (error) {
+    console.error("Error:", error);
     throw new Error("Products not fetched");
   }
 }
 
-export async function getProductsInCollection() {
+// 注意：这里改成了 getShopifyProducts，为了配合 App.tsx
+export async function getShopifyProducts() {
   const query = `
   {
-    products(first: 6) {
+    products(first: 20) {
       edges {
         node {
           id
           title
           handle
+          description
           priceRange {
             minVariantPrice {
               amount
               currencyCode
             }
           }
-          images(first: 1) {
+          images(first: 4) {
             edges {
               node {
                 url
@@ -55,7 +55,6 @@ export async function getProductsInCollection() {
     }
   }`;
 
-  const response = await ShopifyData(query);
-  const allProducts = response.data.products.edges ? response.data.products.edges : [];
-  return allProducts;
+  const response = await shopifyData(query);
+  return response.data?.products?.edges || [];
 }
