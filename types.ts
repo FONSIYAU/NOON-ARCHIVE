@@ -1,3 +1,4 @@
+
 export interface Product {
   id: string;
   name: string;
@@ -13,7 +14,7 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-export type ViewState = 'HOME' | 'PRODUCT_DETAIL' | 'INDEX' | 'PRIVACY' | 'TERMS' | 'ABOUT' | 'STORY' | 'INSTAGRAM' | 'CHECKOUT';
+export type ViewState = 'HOME' | 'PRODUCT_DETAIL' | 'INDEX' | 'PRIVACY' | 'TERMS' | 'REFUND' | 'ABOUT' | 'STORY' | 'INSTAGRAM' | 'CHECKOUT';
 
 export interface Region {
   id: string;

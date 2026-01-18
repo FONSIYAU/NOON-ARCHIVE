@@ -11,6 +11,7 @@ import { SearchOverlay } from './components/SearchOverlay';
 import { LoginDrawer } from './components/LoginDrawer';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
+import { RefundPolicy } from './components/RefundPolicy';
 import { About } from './components/About';
 import { Story } from './components/Story';
 import { Instagram } from './components/Instagram';
@@ -36,10 +37,7 @@ const App: React.FC = () => {
   const [regionModalOpen, setRegionModalOpen] = useState(false);
   const [currentRegion, setCurrentRegion] = useState<Region>(REGIONS[0]);
   
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    { ...PRODUCTS[0], size: 'M', quantity: 1 },
-    { ...PRODUCTS[7], size: 'L', quantity: 1 }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -83,6 +81,12 @@ const App: React.FC = () => {
 
   const goTerms = () => {
     setView('TERMS');
+    setSelectedProduct(null);
+    window.scrollTo(0, 0);
+  };
+
+  const goRefund = () => {
+    setView('REFUND');
     setSelectedProduct(null);
     window.scrollTo(0, 0);
   };
@@ -144,6 +148,9 @@ const App: React.FC = () => {
         <Checkout 
             items={cartItems} 
             onBack={() => setView('HOME')} 
+            onViewRefund={goRefund}
+            onViewPrivacy={goPrivacy}
+            onViewTerms={goTerms}
             region={currentRegion}
         />
     );
@@ -241,6 +248,10 @@ const App: React.FC = () => {
 
         {view === 'TERMS' && (
             <TermsOfService region={currentRegion} />
+        )}
+
+        {view === 'REFUND' && (
+            <RefundPolicy region={currentRegion} />
         )}
 
         {view === 'ABOUT' && (

@@ -542,6 +542,15 @@ const GB_PAGE_CONTENT = {
             { title: "03. Products and Pricing", content: "All features, content, specifications, products and prices of products and services described or depicted on this Web Site are subject to change at any time without notice. We make all reasonable efforts to accurately display the attributes of our products." },
             { title: "04. Governing Law", content: "These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of the United Kingdom." }
         ]
+    },
+    REFUND: {
+        title: "Refund Policy",
+        subtitle: "Returns & Exchanges",
+        sections: [
+            { title: "01. Returns", content: "We have a 14-day return policy, which means you have 14 days after receiving your item to request a return. To be eligible for a return, your item must be in the same condition that you received it, unworn or unused, with tags, and in its original packaging." },
+            { title: "02. Damages and issues", content: "Please inspect your order upon reception and contact us immediately if the item is defective, damaged or if you receive the wrong item, so that we can evaluate the issue and make it right." },
+            { title: "03. Refunds", content: "We will notify you once we’ve received and inspected your return, and let you know if the refund was approved or not. If approved, you’ll be automatically refunded on your original payment method." }
+        ]
     }
 };
 
@@ -673,6 +682,37 @@ export const PAGE_CONTENT: Record<string, Record<string, any>> = {
                 { title: "02. 知识产权", content: "与本网站相关的内容、组织、图形、设计、汇编、磁翻译、数字转换和其他事项受适用版权、商标和其他所有权的保护。" },
                 { title: "03. 产品和定价", content: "本网站上描述或描绘的所有功能、内容、规格、产品以及产品和服务的价格随时可能更改，恕不另行通知。" },
                 { title: "04. 适用法律", content: "这些服务条款以及我们向您提供服务的任何单独协议应受英国法律管辖并按其解释。" }
+            ]
+        }
+    },
+    REFUND: {
+        GB: GB_PAGE_CONTENT.REFUND,
+        US: GB_PAGE_CONTENT.REFUND,
+        JP: {
+            title: "返金ポリシー",
+            subtitle: "返品と交換",
+            sections: [
+                { title: "01. 返品", content: "当社は14日間の返品ポリシーを設けており、商品を受け取ってから14日以内であれば返品をリクエストできます。返品の対象となるには、アイテムは受け取ったときと同じ状態、未着用または未使用で、タグが付いており、元のパッケージに入っている必要があります。" },
+                { title: "02. 損傷と問題", content: "受け取り時に注文を検査し、アイテムに欠陥がある場合、損傷している場合、または間違ったアイテムを受け取った場合は、すぐに連絡して問題を評価し、修正できるようにしてください。" },
+                { title: "03. 返金", content: "返品を受け取り、検査した後、通知し、返金が承認されたかどうかをお知らせします。承認された場合、元の支払い方法で自動的に返金されます。" }
+            ]
+        },
+        FR: {
+            title: "Politique de Remboursement",
+            subtitle: "Retours et Échanges",
+            sections: [
+                { title: "01. Retours", content: "Nous avons une politique de retour de 14 jours, ce qui signifie que vous avez 14 jours après réception de votre article pour demander un retour. Pour être éligible à un retour, votre article doit être dans le même état que vous l'avez reçu, non porté ou non utilisé, avec des étiquettes et dans son emballage d'origine." },
+                { title: "02. Dommages et problèmes", content: "Veuillez inspecter votre commande à la réception et nous contacter immédiatement si l'article est défectueux, endommagé ou si vous recevez le mauvais article, afin que nous puissions évaluer le problème et y remédier." },
+                { title: "03. Remboursements", content: "Nous vous informerons une fois que nous aurons reçu et inspecté votre retour, et vous ferons savoir si le remboursement a été approuvé ou non. S'il est approuvé, vous serez automatiquement remboursé sur votre mode de paiement d'origine." }
+            ]
+        },
+        CN: {
+            title: "退款政策",
+            subtitle: "退货与换货",
+            sections: [
+                { title: "01. 退货", content: "我们有14天退货政策，这意味着您在收到商品后有14天的时间申请退货。要获得退货资格，您的商品必须处于与您收到时相同的状态，未穿过或未使用，带有标签，并处于原始包装中。" },
+                { title: "02. 损坏和问题", content: "请在收到订单时检查您的订单，如果商品有缺陷、损坏或收到错误的商品，请立即联系我们，以便我们评估问题并予以纠正。" },
+                { title: "03. 退款", content: "我们将在收到并检查您的退货后通知您，并告知您退款是否获得批准。如果获得批准，您将通过原来的付款方式自动获得退款。" }
             ]
         }
     }
