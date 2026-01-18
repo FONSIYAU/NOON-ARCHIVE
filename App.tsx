@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 // ==========================================
-// 1. Shopify 连接逻辑 (保持不变，因为它是对的)
+// 1. Shopify 连接逻辑 (只读真数据)
 // ==========================================
 const domain = import.meta.env.VITE_SHOPIFY_DOMAIN;
 const storefrontAccessToken = import.meta.env.VITE_SHOPIFY_TOKEN;
 
 async function getShopifyData() {
+  // 如果没配置环境变量，直接返回空，绝不造假
+  if (!domain || !storefrontAccessToken) return [];
+
   const query = `
   {
-    products(first: 8) {
+    products(first: 20) {
       edges {
         node {
           id
@@ -48,15 +51,16 @@ async function getShopifyData() {
     };
     const res = await fetch(URL, options);
     const json = await res.json();
+    // 拿到真数据
     return json.data?.products?.edges || [];
   } catch (error) {
-    console.error("Shopify fetch failed:", error);
+    console.error("Shopify 连接失败:", error);
     return [];
   }
 }
 
 // ==========================================
-// 2. 页面组件 (颜值恢复版)
+// 2. 页面组件 (样板房的外观 + 真实的数据)
 // ==========================================
 function App() {
   const [products, setProducts] = useState<any[]>([]);
@@ -64,8 +68,11 @@ function App() {
 
   useEffect(() => {
     async function load() {
+      // 没有任何假数据兜底逻辑，直接去 Shopify 拿
       const realData = await getShopifyData();
-      if (realData) setProducts(realData);
+      if (realData) {
+        setProducts(realData);
+      }
       setLoading(false);
     }
     load();
@@ -74,115 +81,92 @@ function App() {
   return (
     <div className="min-h-screen bg-[#F4F4F2] text-[#1a1a1a] font-mono selection:bg-gray-300">
       
-      {/* --- HEADER (顶部导航) --- */}
-      <header className="fixed top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50 mix-blend-difference text-white">
+      {/* --- HEADER (顶部导航 - 保持原样) --- */}
+      <header className="p-6 md:p-10 border-b border-[#e5e5e0] flex justify-between items-center sticky top-0 bg-[#F4F4F2]/90 backdrop-blur-sm z-50">
         <h1 className="text-2xl font-bold tracking-tighter">NOON ARCHIVE</h1>
-        <div className="text-xs space-x-6 hidden md:flex font-bold">
-          <span className="cursor-pointer hover:opacity-70">INDEX</span>
-          <span className="cursor-pointer hover:opacity-70">STORY</span>
-          <span className="cursor-pointer hover:opacity-70">CART (0)</span>
+        <div className="text-xs space-x-4 hidden md:block">
+          <span>INDEX</span>
+          <span>SEARCH</span>
+          <span>CART (0)</span>
         </div>
       </header>
 
-      {/* --- HERO SECTION (你要回来的封面大图) --- */}
-      <section className="relative w-full h-[85vh] overflow-hidden">
-        {/* 这里的图片地址你可以换成你自己的 */}
-        <img 
-          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2670&auto=format&fit=crop" 
-          alt="Campaign" 
-          className="w-full h-full object-cover filter brightness-[0.85]"
-        />
-        <div className="absolute bottom-10 left-6 md:left-10 text-white">
-          <p className="text-xs mb-2">COLLECTION 01</p>
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter leading-none">
-            SILENCE <br/> IN MOTION
-          </h2>
-        </div>
-      </section>
-
-      {/* --- STORY SECTION (你要回来的品牌故事) --- */}
-      <section className="py-24 px-6 md:px-10 max-w-4xl mx-auto text-center">
-        <span className="text-xs text-gray-400 block mb-6">THE STORY</span>
-        <p className="text-lg md:text-2xl leading-relaxed text-[#1a1a1a] font-sans font-light">
-          "Noon Archive is not just a store. It represents a curated dialogue between 
-          functionality and aesthetics. We collect objects that endure the test of time, 
-          focusing on materials, texture, and silence."
-        </p>
-        <p className="mt-8 text-xs text-gray-500 uppercase tracking-widest">
-          Established 2026 • Based in Shanghai
-        </p>
-      </section>
-
-      {/* --- PRODUCT GRID (Shopify 商品区) --- */}
-      <main className="p-6 md:p-10 border-t border-[#e5e5e0]">
-        <div className="flex justify-between items-end mb-12">
+      <main className="p-6 md:p-10">
+        <div className="flex flex-col gap-4 mb-12">
+          {/* --- 这就是你要找回的“样板房设计” (大标题 + 分类条) --- */}
           <h2 className="text-6xl font-bold tracking-tighter uppercase">Index</h2>
-          <span className="text-xs font-mono text-gray-500">
-             {loading ? "LOADING STOCK..." : `AVAILABLE ITEMS: ${products.length}`}
-          </span>
+          
+          <div className="flex justify-between items-end border-b border-[#e5e5e0] pb-2">
+            {/* 这里的分类虽然暂时点不动，但必须存在，为了撑起页面的“设计感” */}
+            <div className="text-xs space-x-6 text-gray-400 font-mono">
+              <span className="text-black cursor-pointer font-bold border-b border-black pb-0.5">ALL</span>
+              <span className="hover:text-black cursor-pointer transition-colors">OUTERWEAR</span>
+              <span className="hover:text-black cursor-pointer transition-colors">FOOTWEAR</span>
+              <span className="hover:text-black cursor-pointer transition-colors">OBJECTS</span>
+            </div>
+            {/* 真实的统计数据 */}
+            <span className="text-xs font-mono text-gray-500">
+               {loading ? "LOADING ARCHIVE..." : `FULL ARCHIVE • ${products.length} ITEMS`}
+            </span>
+          </div>
         </div>
 
-        {/* 商品网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-16">
-          
-          {/* 如果还没进货，显示提示 */}
-          {!loading && products.length === 0 && (
-            <div className="col-span-full py-20 text-center border border-dashed border-gray-300 text-gray-400">
-              <p>NO ITEMS FOUND IN SHOPIFY</p>
+        {/* --- 商品展示区 --- */}
+        <div className="min-h-[50vh]">
+          {loading && (
+            <div className="pt-20 text-center text-xs text-gray-400 animate-pulse">
+              CONNECTING TO SHOPIFY...
             </div>
           )}
 
-          {/* 渲染真商品 */}
-          {products.map((item) => {
-            const product = item.node;
-            const image = product.images.edges[0]?.node.url;
-            const price = product.priceRange.minVariantPrice.amount;
-            const currency = product.priceRange.minVariantPrice.currencyCode;
+          {/* 如果 Shopify 里真的没货 (0件)，优雅地显示空状态，而不是假货 */}
+          {!loading && products.length === 0 && (
+             <div className="py-32 border border-dashed border-[#e5e5e0] text-center">
+               <p className="text-sm text-gray-400 mb-2">ARCHIVE IS EMPTY</p>
+               <p className="text-[10px] text-gray-300">PLEASE ADD PRODUCTS IN SHOPIFY HEADLESS CHANNEL</p>
+             </div>
+          )}
 
-            return (
-              <div key={product.id} className="group cursor-pointer flex flex-col gap-4">
-                <div className="relative aspect-[3/4] overflow-hidden bg-[#e5e5e0]">
-                  {image ? (
-                    <img 
-                      src={image} 
-                      alt={product.title}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">NO IMAGE</div>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-sm font-bold uppercase tracking-wide group-hover:underline decoration-1 underline-offset-4">
-                    {product.title}
-                  </h3>
-                  <div className="flex justify-between items-center text-xs text-gray-500 font-sans">
-                    <span>In Stock</span>
-                    <span>{currency} {parseFloat(price).toFixed(0)}</span>
+          {/* 渲染真实的 Shopify 商品 (哪怕只有 1 个) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12">
+            {products.map((item) => {
+              const product = item.node;
+              const image = product.images.edges[0]?.node.url;
+              const price = product.priceRange.minVariantPrice.amount;
+              const currency = product.priceRange.minVariantPrice.currencyCode;
+
+              return (
+                <div key={product.id} className="group cursor-pointer flex flex-col gap-3">
+                  {/* 图片区域 - 保持原本的高级比例 */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#e5e5e0]">
+                    {image ? (
+                      <img 
+                        src={image} 
+                        alt={product.title}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">NO IMAGE</div>
+                    )}
+                  </div>
+                  
+                  {/* 文字区域 - 保持原本的排版 */}
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-sm font-bold uppercase tracking-wide">{product.title}</h3>
+                    <div className="flex justify-between items-center text-xs text-gray-500">
+                      <span>NEW ARRIVAL</span>
+                      <span>{currency} {parseFloat(price).toFixed(0)}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </main>
 
-      {/* --- FOOTER --- */}
-      <footer className="bg-[#1a1a1a] text-[#F4F4F2] p-10 mt-20">
-        <div className="flex flex-col md:flex-row justify-between gap-10">
-          <div>
-            <h4 className="font-bold mb-4">NEWSLETTER</h4>
-            <div className="flex border-b border-[#555] pb-2">
-              <input type="email" placeholder="Email Address" className="bg-transparent outline-none w-full placeholder-gray-500 text-sm"/>
-              <button className="text-xs font-bold uppercase">Join</button>
-            </div>
-          </div>
-          <div className="text-xs text-gray-400 flex flex-col gap-2 text-right">
-            <p>INSTAGRAM</p>
-            <p>WEIBO</p>
-            <p>&copy; 2026 NOON ARCHIVE</p>
-          </div>
-        </div>
+      <footer className="p-10 mt-20 border-t border-[#e5e5e0] text-xs text-gray-400">
+        <p>&copy; 2026 NOON ARCHIVE / POWERED BY SHOPIFY</p>
       </footer>
     </div>
   );
