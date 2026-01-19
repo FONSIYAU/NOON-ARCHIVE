@@ -7,12 +7,15 @@ const dataset = 'production'
 
 export default defineConfig({
   name: 'default',
-  title: 'NOON Content Studio', // 客户看到的后台名字
+  title: 'NOON Content Studio',
 
   projectId,
   dataset,
 
   plugins: [structureTool()],
+
+  // 关键修复：告诉 Studio 它住在哪里
+  basePath: '/studio',
 
   schema: {
     types: schemaTypes,
